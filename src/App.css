@@ -1,5 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
+  position: relative;
+}
+
+.header {
+  position: fixed;
+  width: 100%;
+  height: 80px;
+  background-color: darkblue;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .App-logo {
@@ -13,6 +35,11 @@
   }
 }
 
+.popup {
+  width: 200px;
+  height: 200px;
+  background-color: #61dafb !important;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -35,4 +62,9 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.leaflet-container {
+  width: 100vw;
+  height: 100vh;
 }
