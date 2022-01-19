@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef } from "react";
 import query_overpass from "query-overpass";
 import L from "leaflet";
-import { Map, TileLayer } from "react-leaflet";
+import { Map, TileLayer, GeoJSON } from "react-leaflet";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 
@@ -31,9 +31,9 @@ export async function getData(setSchools, query) {
       flatProperties: true,
       overpassUrl: "https://overpass-api.de/api/interpreter"
     };
+    
    query_overpass(query, (error, osmData) => {
       if (!error && osmData.features !== undefined) {
-        console.log(osmData.features)
         setSchools(osmData);
       }
    }, options)
@@ -41,11 +41,13 @@ export async function getData(setSchools, query) {
   }
 
 function App() {
-  const mapRef = useRef();
   const [schools, setSchools] = useState(undefined);
+  const [selected, setSelected] = useState('');
+  const [selectedSchool, setSelectedSchool] = useState({});
+  const [showModal, setShowModal] = useState(false);
 
   const GET_SCHOOL_QUERY = `
-    [out:json][timeout:25];
+    [out:json][timeout:2500];
     (
       node["amenity"="school"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
       way["amenity"="school"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
@@ -57,46 +59,95 @@ function App() {
     const GET_PRIMARY_SCHOOL_QUERY = `
     [out:json][timeout:25];
     (
-      node["amenity"="school"]["isced:level" = "secondary"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
+      node["isced:level" = "primary"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
+      way["isced:level" = "primary"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
     );
     out body;
     >;
     out skel qt;`;
 
-  useEffect(() => {
-    if(!schools) {
-      getData(setSchools, GET_SCHOOL_QUERY);
-    }
-    const { current = {} } = mapRef;
-    const { leafletElement: map } = current;
+    const GET_SECONDARY_SCHOOL_QUERY = `
+    [out:json][timeout:25];
+    (
+      node["isced:level" = "secondary"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
+      way["isced:level" = "secondary"](27.684288135257813,85.25922775268555,27.735655344273848,85.38454055786133);
+    );
+    out body;
+    >;
+    out skel qt;`;
 
-    if (!map) return;
-    const parksGeoJson = new L.GeoJSON(schools, {
-      onEachFeature: (feature = {}, layer) => {
-        const { properties = {} } = feature;
-        const { name } = properties;
-        
-        if (!name && !properties['name:en']) return;
-        layer.bindPopup(`<p className="popup">${name ? name : properties['name:en']}</p>`);
+    // fetching all types of schools
+    useEffect(() => {
+      if(!schools) {
+        getData(setSchools, GET_SCHOOL_QUERY);
       }
-    });
+    }, [])
 
-    parksGeoJson.addTo(map);
-  }, [schools]);
+    useEffect(() => {
+      console.log(selected);
+      if(selected === "primary") {
+        getData(setSchools, GET_PRIMARY_SCHOOL_QUERY)
+      }
+
+      if(selected === "secondary") {
+        getData(setSchools, GET_SECONDARY_SCHOOL_QUERY);
+      }
+
+      if(selected === "all") {
+        getData(setSchools, GET_SCHOOL_QUERY);
+      }
+    }, [selected])
+
+    function onEachSchool (obj, layer) {
+      const {properties} = obj;
+      layer.bindPopup(properties.name ? properties.name : properties['name:en']);
+      // layer.options.fillOpacity = Math.random(); 
+    }
+
+    function openSchoolModal(obj) {
+      const {sourceTarget: {feature}} = obj
+      const {properties} = feature;
+      console.log(properties);
+      setShowModal(true);
+      setSelectedSchool(properties)
+    }
+
 
   return (
-    <div className="App">
-      <div className="header">
-        <span>Filter</span>
-        <span onClick={()=>getData(setSchools, GET_PRIMARY_SCHOOL_QUERY)}>primary school</span>
-        <span>secondary school</span>
+    
+    <div className="home">
+      <div className="sidebar">
+        <h1 className="header">Schools of Kathmandu</h1>
+        <div className="filter-wrapper">
+          <h2 className="filter-header">Filter Options:</h2>
+          <div className="form-group">
+            <label for="school type">Type:</label>
+            <select name="type" id="type" value={selected} onChange={(e) => setSelected(e.target.value)}>
+              <option value="all">All</option>
+              <option value="primary" >Primary School</option>
+              <option value="secondary" >Secondary School</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <Map ref={mapRef} center={[27.7172, 85.3240]} zoom={14}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-      </Map>
+      <div className={`sidebar-right ${showModal && 'active'}`}>
+          <h1>{selectedSchool?.name ? selectedSchool.name : selectedSchool['name:en']}</h1>
+          <p>type:{selectedSchool?.['isced:level']}</p>
+      </div>
+      <div className="map-wrapper">
+        <Map center={[27.7172, 85.3240]} zoom={13}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {schools && <GeoJSON
+          key={schools.features[0].id}
+          data={schools.features}
+          onEachFeature={onEachSchool}
+          onclick={openSchoolModal}
+          />}
+        </Map>
+      </div>
     </div>
   );
 }

@@ -1,70 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.App {
-  text-align: center;
-  position: relative;
+body {
+  font-family: "Roboto", sans-serif;
 }
 
-.header {
-  position: fixed;
-  width: 100%;
-  height: 80px;
-  background-color: darkblue;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  color: #fff;
+.home {
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sidebar {
+  width: 15%;
+  height: 100%;
+  background-color: darkblue;
+  color: #fff;
+  padding: 8px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header {
+  text-align: center;
 }
 
-.popup {
-  width: 200px;
-  height: 200px;
-  background-color: #61dafb !important;
-}
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.map-wrapper {
+  width: 85%;
+  height: 100%;
 }
 
 .leaflet-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+}
+
+.filter-wrapper {
+  margin-top: 24px;
+}
+
+.filter-header {
+  font-size: 20px;
+}
+
+.form-group {
+  padding: 8px 0;
+}
+
+.form-group label {
+  margin-right: 14px;
+}
+
+.sidebar-right {
+  position: absolute;
+  z-index: 1000;
+  right: 0;
+  transform: translateX(100%);
+  background-color: darkblue;
+  width: 15%;
+  color: #fff;
+  height: 100%;
+  transition: transform 0.1s ease-in-out;
+}
+
+.sidebar-right.active {
+  transform: translateX(0);
+  transition: transform 0.1s ease-in-out;
 }
