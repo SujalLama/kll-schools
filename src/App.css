@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 
+:root {
+  --primary-color: #1e2e4a;
+  --primary-light-color: #495770;
+  --primary-dark-color: #192642;
+  --secondary-color: #00ccbe;
+  --grey: #a5acb6;
+  --light-grey: #f5f6f8;
+  --header-color: #1f3559;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,6 +24,7 @@ body {
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   position: relative;
@@ -21,19 +32,41 @@ body {
 }
 
 .sidebar {
-  width: 15%;
+  width: 20%;
   height: 100%;
-  background-color: darkblue;
+  background-color: var(--primary-color);
   color: #fff;
   padding: 8px;
+  overflow-y: scroll;
 }
 
 .header {
   text-align: center;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--header-color);
+  color: var(--grey);
+}
+
+.header__heading {
+  font-size: 24px;
+}
+
+.home__content {
+  width: 100vw;
+  height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
 
 .map-wrapper {
-  width: 85%;
+  width: 60%;
   height: 100%;
 }
 
@@ -59,18 +92,170 @@ body {
 }
 
 .sidebar-right {
-  position: absolute;
-  z-index: 1000;
-  right: 0;
-  transform: translateX(100%);
-  background-color: darkblue;
-  width: 15%;
-  color: #fff;
+  background-color: var(--light-grey);
+  width: 20%;
   height: 100%;
-  transition: transform 0.1s ease-in-out;
+  font-size: 18px;
 }
 
-.sidebar-right.active {
-  transform: translateX(0);
-  transition: transform 0.1s ease-in-out;
+.search-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--grey);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.primary-btn {
+  outline: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+input {
+  border: none;
+  outline: none;
+  background-color: var(--primary-dark-color);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px var(--primary-light-color);
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+::placeholder {
+  color: var(--grey);
+}
+
+.form-group {
+  border-top: 1px solid var(--primary-light-color);
+}
+
+.dropdown-wrapper {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.dropdown-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.dropdown-wrapper .dropdown-list {
+  display: none;
+  margin-top: 8px;
+}
+
+.dropdown-list ul li {
+  font-size: 16px;
+  padding: 8px 20px;
+  cursor: pointer;
+}
+
+.dropdown-list ul li:hover {
+  background-color: var(--primary-dark-color);
+}
+
+.dropdown-wrapper.active .dropdown-list {
+  display: block;
+}
+
+.min {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.min input {
+  width: 50%;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 18px 24px;
+}
+
+.school-name {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 18px 24px;
+}
+
+hr {
+  background-color: var(--light-grey);
+}
+
+.subtle-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+}
+
+.label {
+  color: var(--grey);
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 24px;
+  margin-bottom: 8px;
+}
+
+.label-wrapper {
+  padding: 8px 12px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+:disabled {
+  background-color: var(--grey);
+  cursor: not-allowed;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
